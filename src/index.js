@@ -8,6 +8,12 @@ const app = express();
 
 const exchangeToken = require("./utils/exchangeToken.js");
 
+app.options("*", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "x-acord-token, Content-Type");
+  res.sendStatus(200);
+});
+
 app.use(express.json());
 
 const stats = {
@@ -19,12 +25,6 @@ setInterval(() => {
   stats.mps = stats._mps;
   stats._mps = 0;
 }, 1000);
-
-app.options("*", (req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "x-acord-token, content-type");
-  res.sendStatus(200);
-});
 
 app.get("/:userId", async (req, res) => {
   const token = req.header("x-acord-token");
