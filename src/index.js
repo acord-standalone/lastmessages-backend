@@ -46,10 +46,10 @@ app.post("/", async (req, res) => {
 
   const entries = Object.entries(req.body);
   await aaq.quickForEach(entries, async ([userId, i]) => {
-    const messages = ((await redis.json.get(`Acord:LastMessages:${userId}`, "$")) || { messages: [] }).messages;
+    let messages = ((await redis.json.get(`Acord:LastMessages:${userId}`, "$")) || { messages: [] }).messages;
 
-    // const oldIndex = messages.findIndex(i => i[1] === i[1]);
-    // if (oldIndex !== -1) messages.splice(oldIndex, 1);
+    const oldIndex = messages.findIndex(j => j[1] === i[1]);
+    if (oldIndex !== -1) messages.splice(oldIndex, 1);
 
     messages.unshift(i);
     if (messages.length > 5) messages = messages.slice(0, 5);
