@@ -29,10 +29,10 @@ setInterval(() => {
 app.get("/:userId", async (req, res) => {
   const token = req.header("x-acord-token");
   const id = await exchangeToken(token);
-  if (!id) return res.sendStatus(401);
+  if (!id) return res.status(401).send({ ok: false, error: "Invalid token" });
 
   const lastMessages = ((await redis.json.get(`Acord:LastMessages:${req.params.userId}`, "$")) || { messages: [] }).messages.filter(i => i);
-  res.send(lastMessages);
+  res.send({ ok: true, data: lastMessages });
 
   stats._mps++;
 });
@@ -40,7 +40,7 @@ app.get("/:userId", async (req, res) => {
 app.post("/", async (req, res) => {
   const token = req.header("x-acord-token");
   const id = await exchangeToken(token);
-  if (!id) return res.sendStatus(401);
+  if (!id) return res.status(401).send({ ok: false, error: "Invalid token" });
 
   stats._mps++;
 
@@ -56,13 +56,15 @@ app.post("/", async (req, res) => {
     await redis.json.set(`Acord:LastMessages:${userId}`, "$", { messages });
     await redis.expire(`Acord:LastMessages:${userId}`, 60 * 60 * 24 * 2);
   }, 20);
+
+  res.send({ ok: true });
 });
 
-// setInterval(() => {
-//   let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:2025)\n\n`;
-//   text += `Messages Per Second: ${stats.mps}`;
-//   logUpdate(text);
-// }, 1000);
+setInterval(() => {
+  let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:2025)\n\n`;
+  text += `Messages Per Second: ${stats.mps}`;
+  logUpdate(text);
+}, 1000);
 
 console.clear();
 app.listen(2025);
