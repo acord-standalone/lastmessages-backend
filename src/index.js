@@ -64,4 +64,4 @@ setInterval(() => {
   logUpdate(text);
 }, 1000);
 
-io.listen(2025);
+app.listen(2025);
