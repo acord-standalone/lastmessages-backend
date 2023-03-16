@@ -64,4 +64,5 @@ setInterval(() => {
   logUpdate(text);
 }, 1000);
 
+console.clear();
 app.listen(2025);
