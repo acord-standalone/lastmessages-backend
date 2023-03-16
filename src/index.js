@@ -31,7 +31,7 @@ app.get("/:userId", async (req, res) => {
   const id = await exchangeToken(token);
   if (!id) return res.sendStatus(401);
 
-  const lastMessages = ((await redis.json.get(`Acord:LastMessages:${req.params.userId}`, "$.messages")) || []).filter(i => i);
+  const lastMessages = ((await redis.json.get(`Acord:LastMessages:${req.params.userId}`, "$")) || { messages: [] }).messages.filter(i => i);
   res.send(lastMessages);
 
   stats._mps++;
@@ -46,8 +46,7 @@ app.post("/", async (req, res) => {
 
   const entries = Object.entries(req.body);
   await aaq.quickForEach(entries, async ([userId, i]) => {
-    const messages = ((await redis.json.get(`Acord:LastMessages:${userId}`, "$.messages")) || []);
-    console.log(messages);
+    const messages = ((await redis.json.get(`Acord:LastMessages:${userId}`, "$")) || { messages: [] }).messages;
 
     const oldIndex = messages.findIndex(i => i[1] === i[1]);
     if (oldIndex !== -1) messages.splice(oldIndex, 1);
