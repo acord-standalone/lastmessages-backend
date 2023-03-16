@@ -31,7 +31,7 @@ app.get("/:userId", async (req, res) => {
   const id = await exchangeToken(token);
   if (!id) return res.status(401).send({ ok: false, error: "Invalid token" });
 
-  const lastMessages = ((await redis.json.get(`Acord:LastMessages:${req.params.userId}`, "$")) || { messages: [] }).messages.filter(i => i);
+  const lastMessages = ((await redis.json.get(`Acord:LastMessages:${req.params.userId}`, "$")) || { messages: [] }).messages;
   res.send({ ok: true, data: lastMessages });
 
   stats._mps++;
@@ -48,8 +48,8 @@ app.post("/", async (req, res) => {
   await aaq.quickForEach(entries, async ([userId, i]) => {
     const messages = ((await redis.json.get(`Acord:LastMessages:${userId}`, "$")) || { messages: [] }).messages;
 
-    const oldIndex = messages.findIndex(i => i[1] === i[1]);
-    if (oldIndex !== -1) messages.splice(oldIndex, 1);
+    // const oldIndex = messages.findIndex(i => i[1] === i[1]);
+    // if (oldIndex !== -1) messages.splice(oldIndex, 1);
 
     messages.unshift(i);
     if (messages.length > 5) messages = messages.slice(0, 5);
