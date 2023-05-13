@@ -61,10 +61,10 @@ app.post("/", async (req, res) => {
 });
 
 setInterval(() => {
-  let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:2025)\n\n`;
+  let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:4000)\n\n`;
   text += `Messages Per Second: ${stats.mps}`;
   logUpdate(text);
 }, 1000);
 
 console.clear();
-app.listen(2025);
+app.listen(4000);
