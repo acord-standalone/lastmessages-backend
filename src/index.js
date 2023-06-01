@@ -55,7 +55,7 @@ app.post("/", async (req, res) => {
     if (messages.length > 5) messages = messages.slice(0, 5);
     await redis.json.set(`Acord:LastMessages:${userId}`, "$", { messages });
     await redis.expire(`Acord:LastMessages:${userId}`, 60 * 60 * 24 * 2);
-  }, 20);
+  }, 2);
 
   res.send({ ok: true });
 });
