@@ -60,11 +60,13 @@ app.post("/", async (req, res) => {
   res.send({ ok: true });
 });
 
+const PORT = process.env.PORT || 4000;
+
 setInterval(() => {
-  let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:4000)\n\n`;
+  let text = `[${new Date().toLocaleTimeString()}] LastMessages Backend (*:${PORT})\n\n`;
   text += `Messages Per Second: ${stats.mps}`;
   logUpdate(text);
 }, 1000);
 
 console.clear();
-app.listen(4000);
+app.listen(PORT);
