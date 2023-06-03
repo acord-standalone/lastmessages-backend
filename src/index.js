@@ -43,6 +43,7 @@ app.post("/", async (req, res) => {
   if (!id) return res.status(401).send({ ok: false, error: "Invalid token" });
 
   stats._mps++;
+  res.send({ ok: true });
 
   const entries = Object.entries(req.body);
   await aaq.quickForEach(entries, async ([userId, i]) => {
@@ -55,9 +56,8 @@ app.post("/", async (req, res) => {
     if (messages.length > 5) messages = messages.slice(0, 5);
     await redis.json.set(`Acord:LastMessages:${userId}`, "$", { messages });
     await redis.expire(`Acord:LastMessages:${userId}`, 60 * 60 * 24 * 2);
-  }, 2);
+  }, 5);
 
-  res.send({ ok: true });
 });
 
 const PORT = process.env.PORT || 4000;
